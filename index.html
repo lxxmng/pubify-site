@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pubify — London's Critic Ledger</title>
+<meta name="description" content="The definitive pub review app for London. Three pillars: The Pour, The Ambiance, The Powder Room.">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Georgia', serif; background: #0D0D0D; color: #F7F3EC; }
+a { color: #C8841C; text-decoration: none; }
+
+.nav { display: flex; justify-content: space-between; align-items: center; padding: 32px 60px; border-bottom: 0.5px solid #ffffff10; }
+.nav-logo { display: flex; align-items: center; gap: 12px; }
+.nav-wordmark { font-family: 'Arial Black', sans-serif; font-size: 22px; font-weight: 900; letter-spacing: -1px; color: #F7F3EC; }
+.nav-dots { display: flex; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.nav-links { display: flex; gap: 32px; font-size: 11px; letter-spacing: 3px; color: #F7F3EC80; text-transform: uppercase; }
+.nav-links a { color: #F7F3EC80; }
+.nav-links a:hover { color: #C8841C; }
+
+.hero { padding: 120px 60px 100px; max-width: 900px; }
+.hero-label { font-size: 10px; letter-spacing: 5px; color: #C8841C; text-transform: uppercase; margin-bottom: 24px; }
+.hero-title { font-family: 'Arial Black', sans-serif; font-size: clamp(52px, 8vw, 96px); font-weight: 900; line-height: 0.95; letter-spacing: -3px; color: #F7F3EC; margin-bottom: 32px; }
+.hero-title span { color: #C8841C; }
+.hero-body { font-size: 18px; line-height: 1.8; color: #F7F3EC80; max-width: 560px; margin-bottom: 48px; }
+.hero-cta { display: inline-flex; align-items: center; gap: 12px; background: #C8841C; color: #0D0D0D; font-family: 'Arial Black', sans-serif; font-size: 12px; font-weight: 900; letter-spacing: 3px; padding: 18px 32px; cursor: pointer; }
+.hero-cta:hover { opacity: 0.9; }
+
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 0; }
+.pillar { background: #1A1714; padding: 48px 40px; }
+.pillar-circle { width: 80px; height: 80px; border-radius: 50%; border: 2px solid; margin-bottom: 24px; position: relative; overflow: hidden; }
+.pillar-fill { position: absolute; bottom: 0; left: 0; right: 0; }
+.pillar-name { font-family: 'Arial Black', sans-serif; font-size: 14px; font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; }
+.pillar-desc { font-size: 13px; color: #F7F3EC60; line-height: 1.6; }
+
+.section { padding: 100px 60px; }
+.section-label { font-size: 10px; letter-spacing: 5px; color: #C8841C; text-transform: uppercase; margin-bottom: 16px; }
+.section-title { font-family: 'Arial Black', sans-serif; font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 32px; }
+
+.scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
+.score-cell { background: #1A1714; padding: 40px; }
+.score-num { font-family: 'Georgia', serif; font-size: 56px; font-weight: bold; line-height: 1; margin-bottom: 8px; }
+.score-label { font-family: 'Arial Black', sans-serif; font-size: 11px; letter-spacing: 3px; }
+.score-desc { font-size: 12px; color: #F7F3EC50; margin-top: 8px; line-height: 1.5; }
+
+.support { background: #1A1714; padding: 80px 60px; display: flex; justify-content: space-between; align-items: center; gap: 60px; flex-wrap: wrap; }
+.support-text h2 { font-family: 'Arial Black', sans-serif; font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
+.support-text p { font-size: 15px; color: #F7F3EC60; line-height: 1.7; max-width: 480px; }
+.support-buttons { display: flex; flex-direction: column; gap: 12px; min-width: 240px; }
+.support-btn { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border: 1px solid; font-family: 'Arial Black', sans-serif; font-size: 12px; font-weight: 900; letter-spacing: 2px; cursor: pointer; text-decoration: none; }
+.support-btn:hover { opacity: 0.85; }
+.btn-kofi { border-color: #C8841C80; color: #C8841C; background: #C8841C15; }
+.btn-eth { border-color: #627EEA80; color: #627EEA; background: #627EEA15; }
+.eth-addr { font-size: 9px; letter-spacing: 1px; opacity: 0.6; font-family: monospace; margin-top: 4px; }
+
+.footer { padding: 48px 60px; border-top: 0.5px solid #ffffff10; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; }
+.footer-copy { font-size: 10px; letter-spacing: 2px; color: #F7F3EC30; text-transform: uppercase; }
+.footer-links { display: flex; gap: 24px; font-size: 10px; letter-spacing: 2px; color: #F7F3EC40; text-transform: uppercase; }
+.footer-links a { color: #F7F3EC40; }
+.footer-links a:hover { color: #C8841C; }
+
+@media (max-width: 768px) {
+  .nav { padding: 24px 24px; }
+  .hero { padding: 80px 24px; }
+  .pillars { grid-template-columns: 1fr; }
+  .scores { grid-template-columns: 1fr; }
+  .section { padding: 60px 24px; }
+  .support { padding: 60px 24px; flex-direction: column; }
+  .footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-dots">
+      <div class="dot" style="background:#C8841C"></div>
+      <div class="dot" style="background:#8B4513"></div>
+      <div class="dot" style="background:#7EB8C9"></div>
+    </div>
+    <span class="nav-wordmark">PUBIFY</span>
+  </div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#support">Support</a>
+    <a href="privacy.html">Privacy</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-label">London's Critic Ledger</div>
+  <h1 class="hero-title">THE PUB<br>DESERVES<br><span>A VERDICT.</span></h1>
+  <p class="hero-body">Not five stars from someone who ordered sparkling water. A proper verdict — scored on The Pour, The Ambiance, and The Powder Room. By critics who actually drink the beer.</p>
+  <a href="#" class="hero-cta">
+    <div style="display:flex;gap:5px">
+      <div class="dot" style="background:#0D0D0D;opacity:0.5;width:8px;height:8px"></div>
+      <div class="dot" style="background:#8B4513;width:8px;height:8px"></div>
+      <div class="dot" style="background:#7EB8C9;opacity:0.7;width:8px;height:8px"></div>
+    </div>
+    DOWNLOAD FOR iOS
+  </a>
+</section>
+
+<div class="pillars">
+  <div class="pillar">
+    <div class="pillar-circle" style="border-color:#C8841C">
+      <div class="pillar-fill" style="height:50%;background:#C8841C;opacity:0.85"></div>
+    </div>
+    <div class="pillar-name" style="color:#C8841C">THE POUR</div>
+    <p class="pillar-desc">Beer, ale, gin. Is it kept well? Is it priced honestly? Does it taste like someone cares?</p>
+  </div>
+  <div class="pillar">
+    <div class="pillar-circle" style="border-color:#8B4513">
+      <div class="pillar-fill" style="height:50%;background:#8B4513;opacity:0.9"></div>
+    </div>
+    <div class="pillar-name" style="color:#8B4513">THE AMBIANCE</div>
+    <p class="pillar-desc">Atmosphere, vibe, noise. Can you have a conversation? Does it feel like London?</p>
+  </div>
+  <div class="pillar">
+    <div class="pillar-circle" style="border-color:#7EB8C9">
+      <div class="pillar-fill" style="height:25%;background:#7EB8C9;opacity:0.65"></div>
+    </div>
+    <div class="pillar-name" style="color:#7EB8C9">THE POWDER ROOM</div>
+    <p class="pillar-desc">A great pub with a terrible bathroom is not a great pub. We hold the full standard.</p>
+  </div>
+</div>
+
+<section class="section" id="about">
+  <div class="section-label">The Score System</div>
+  <h2 class="section-title">ONE NUMBER.<br>THREE PILLARS.</h2>
+  <div class="scores">
+    <div class="score-cell">
+      <div class="score-num" style="color:#C8841C">85+</div>
+      <div class="score-label" style="color:#C8841C">CERTIFIED LEGEND</div>
+      <p class="score-desc">The highest honour. Exceptional across all three pillars.</p>
+    </div>
+    <div class="score-cell">
+      <div class="score-num" style="color:#4A7A2E">60–84</div>
+      <div class="score-label" style="color:#4A7A2E">CHIC CHOICE</div>
+      <p class="score-desc">Worth your evening. Solid across the board.</p>
+    </div>
+    <div class="score-cell">
+      <div class="score-num" style="color:#6B1F2A">1–59</div>
+      <div class="score-label" style="color:#6B1F2A">SPILLED TONIC</div>
+      <p class="score-desc">Proceed with caution. The critics have spoken.</p>
+    </div>
+  </div>
+</section>
+
+<div class="support" id="support">
+  <div class="support-text">
+    <h2>KEEP THE LEDGER OPEN.</h2>
+    <p>Pubify is free, independent, and built by Londoners who care about pubs. No ads, no investors, no sponsored results. If you find it useful, a tip keeps the lights on.</p>
+  </div>
+  <div class="support-buttons">
+    <a href="https://ko-fi.com/pubify" target="_blank" class="support-btn btn-kofi">
+      <span>BUY US A PINT</span>
+      <span style="font-size:11px;font-family:Georgia;font-style:italic">Ko-fi →</span>
+    </a>
+    <div class="support-btn btn-eth" onclick="navigator.clipboard.writeText('0x7edFDccdCCB74187F3576446336Df60004Ac08FD').then(()=>this.querySelector('.eth-copy').textContent='COPIED ✓')" style="flex-direction:column;align-items:flex-start;cursor:pointer">
+      <div style="display:flex;justify-content:space-between;width:100%">
+        <span>SEND ETH</span>
+        <span class="eth-copy" style="font-size:10px;opacity:0.6">TAP TO COPY</span>
+      </div>
+      <div class="eth-addr">0x7edFDccdCCB74187F3576446336Df60004Ac08FD</div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">
+    <div class="nav-dots">
+      <div class="dot" style="background:#C8841C;width:8px;height:8px"></div>
+      <div class="dot" style="background:#8B4513;width:8px;height:8px"></div>
+      <div class="dot" style="background:#7EB8C9;width:8px;height:8px"></div>
+    </div>
+    <span style="font-family:'Arial Black',sans-serif;font-size:14px;font-weight:900;color:#F7F3EC60">PUBIFY</span>
+  </div>
+  <div class="footer-copy">London's Critic Ledger</div>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="mailto:hello@pubify.co.uk">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
