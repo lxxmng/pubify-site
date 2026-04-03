@@ -56,17 +56,51 @@ a { color: #C8841C; text-decoration: none; }
 
 .feedback { padding: 100px 60px; border-top: 0.5px solid #ffffff10; }
 .feedback-inner { max-width: 680px; }
-.feedback-types { display: flex; gap: 2px; margin-bottom: 24px; }
-.feedback-type { font-family: 'Arial Black', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 3px; padding: 12px 24px; border: 1px solid #ffffff15; color: #F7F3EC40; background: transparent; cursor: pointer; transition: all 0.15s; }
-.feedback-type.active { border-color: #C8841C; color: #C8841C; background: #C8841C10; }
-.feedback-type:hover:not(.active) { border-color: #ffffff30; color: #F7F3EC60; }
-.feedback-textarea { width: 100%; background: #1A1714; border: 1px solid #ffffff10; color: #F7F3EC; font-family: 'Georgia', serif; font-size: 14px; line-height: 1.7; padding: 24px; resize: vertical; min-height: 140px; outline: none; margin-bottom: 2px; }
-.feedback-textarea:focus { border-color: #C8841C40; }
-.feedback-textarea::placeholder { color: #F7F3EC25; font-style: italic; }
-.feedback-submit { font-family: 'Arial Black', sans-serif; font-size: 11px; font-weight: 900; letter-spacing: 3px; padding: 16px 32px; background: #C8841C; color: #0D0D0D; border: none; cursor: pointer; width: 100%; margin-top: 2px; }
-.feedback-submit:hover { opacity: 0.9; }
-.feedback-submit:disabled { opacity: 0.4; cursor: default; }
-.feedback-success { font-size: 12px; letter-spacing: 2px; color: #C8841C; text-transform: uppercase; margin-top: 16px; display: none; }
+.feedback-types { display: flex; gap: 2px; margin-bottom: 24px; flex-wrap: wrap; }
+.feedback-type {
+  font-family: 'Arial Black', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 3px;
+  padding: 14px 22px; border: 1px solid #ffffff10; color: #F7F3EC25; background: transparent;
+  cursor: pointer; transition: all 0.25s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 8px;
+}
+.feedback-type .ft-icon { font-size: 14px; transition: transform 0.3s ease; display: inline-block; }
+.feedback-type:hover:not(.active) { color: #F7F3EC50; border-color: #ffffff20; }
+.feedback-type:hover:not(.active) .ft-icon { transform: scale(1.2); }
+
+.feedback-type[data-type="bug"].active   { border-color: #C0392B; color: #E74C3C; background: #C0392B12; }
+.feedback-type[data-type="bug"].active .ft-icon { transform: rotate(-15deg) scale(1.1); }
+
+.feedback-type[data-type="suggestion"].active { border-color: #C8841C; color: #C8841C; background: #C8841C12; }
+.feedback-type[data-type="suggestion"].active .ft-icon { transform: translateY(-2px) scale(1.15); }
+
+.feedback-type[data-type="other"].active  { border-color: #7EB8C9; color: #7EB8C9; background: #7EB8C912; }
+.feedback-type[data-type="other"].active .ft-icon { transform: rotate(20deg) scale(1.1); }
+
+.feedback-textarea {
+  width: 100%; background: #1A1714; color: #F7F3EC;
+  font-family: 'Georgia', serif; font-size: 14px; line-height: 1.7;
+  padding: 24px; resize: vertical; min-height: 140px; outline: none; margin-bottom: 2px;
+  border: 1px solid #ffffff10; transition: border-color 0.3s ease;
+}
+.feedback-textarea::placeholder { color: #F7F3EC20; font-style: italic; transition: color 0.2s; }
+.feedback-textarea[data-accent="bug"]:focus    { border-color: #E74C3C50; }
+.feedback-textarea[data-accent="suggestion"]:focus { border-color: #C8841C50; }
+.feedback-textarea[data-accent="other"]:focus  { border-color: #7EB8C950; }
+
+.feedback-submit {
+  font-family: 'Arial Black', sans-serif; font-size: 11px; font-weight: 900; letter-spacing: 3px;
+  padding: 16px 32px; border: none; cursor: pointer; width: 100%; margin-top: 2px;
+  transition: background 0.3s ease, opacity 0.2s;
+}
+.feedback-submit[data-accent="bug"]        { background: #C0392B; color: #fff; }
+.feedback-submit[data-accent="suggestion"] { background: #C8841C; color: #0D0D0D; }
+.feedback-submit[data-accent="other"]      { background: #7EB8C9; color: #0D0D0D; }
+.feedback-submit:hover { opacity: 0.88; }
+.feedback-submit:disabled { opacity: 0.35; cursor: default; }
+.feedback-success { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-top: 16px; display: none; }
+.feedback-success[data-accent="bug"]        { color: #E74C3C; }
+.feedback-success[data-accent="suggestion"] { color: #C8841C; }
+.feedback-success[data-accent="other"]      { color: #7EB8C9; }
 
 .footer { padding: 48px 60px; border-top: 0.5px solid #ffffff10; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
 .footer-logo { display: flex; align-items: center; gap: 10px; }
@@ -191,41 +225,77 @@ a { color: #C8841C; text-decoration: none; }
     <h2 class="section-title" style="margin-bottom:40px">FOUND A BUG?<br>HAVE A THOUGHT?</h2>
     <form id="feedbackForm">
       <div class="feedback-types">
-        <button type="button" class="feedback-type active" onclick="selectType(this,'BUG REPORT')">FOUND A BUG</button>
-        <button type="button" class="feedback-type" onclick="selectType(this,'SUGGESTION')">HAVE A SUGGESTION</button>
-        <button type="button" class="feedback-type" onclick="selectType(this,'OTHER')">OTHER</button>
+        <button type="button" class="feedback-type active" data-type="bug" onclick="selectType(this)">
+          <span class="ft-icon">🐛</span> FOUND A BUG
+        </button>
+        <button type="button" class="feedback-type" data-type="suggestion" onclick="selectType(this)">
+          <span class="ft-icon">💡</span> HAVE A SUGGESTION
+        </button>
+        <button type="button" class="feedback-type" data-type="other" onclick="selectType(this)">
+          <span class="ft-icon">✦</span> OTHER
+        </button>
       </div>
-      <textarea class="feedback-textarea" id="feedbackMessage" placeholder="Tell us what happened, or what you'd love to see..." required></textarea>
-      <button type="submit" class="feedback-submit" id="feedbackBtn">SUBMIT TO THE LEDGER</button>
-      <div class="feedback-success" id="feedbackSuccess">VERDICT RECEIVED. WE'LL LOOK INTO IT.</div>
+      <textarea class="feedback-textarea" id="feedbackMessage" data-accent="bug" placeholder="Something broke? Tell us exactly what happened..." required></textarea>
+      <button type="submit" class="feedback-submit" id="feedbackBtn" data-accent="bug">SUBMIT TO THE LEDGER</button>
+      <div class="feedback-success" id="feedbackSuccess" data-accent="bug">VERDICT RECEIVED. WE'LL LOOK INTO IT.</div>
     </form>
   </div>
 </section>
 
 <script>
 var feedbackType = 'BUG REPORT';
-function selectType(btn, type) {
+var typewriterTimer = null;
+
+var typeConfig = {
+  bug:        { type: 'BUG REPORT',  accent: 'bug',        placeholder: 'Something broke? Tell us exactly what happened...',         submit: 'FILE THE BUG REPORT' },
+  suggestion: { type: 'SUGGESTION',  accent: 'suggestion',  placeholder: 'What would make Pubify even better? Dream a little...',     submit: 'SUBMIT TO THE LEDGER' },
+  other:      { type: 'OTHER',       accent: 'other',       placeholder: 'Anything on your mind. The ledger is always open...',        submit: 'SEND IT THROUGH'      },
+};
+
+function typewrite(el, text) {
+  if (typewriterTimer) clearInterval(typewriterTimer);
+  el.placeholder = '';
+  var i = 0;
+  typewriterTimer = setInterval(function() {
+    el.placeholder += text[i++];
+    if (i >= text.length) clearInterval(typewriterTimer);
+  }, 28);
+}
+
+function selectType(btn) {
   document.querySelectorAll('.feedback-type').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  feedbackType = type;
+  var cfg = typeConfig[btn.dataset.type];
+  feedbackType = cfg.type;
+  var ta = document.getElementById('feedbackMessage');
+  var sb = document.getElementById('feedbackBtn');
+  var ss = document.getElementById('feedbackSuccess');
+  ta.dataset.accent = cfg.accent;
+  sb.dataset.accent = cfg.accent;
+  ss.dataset.accent = cfg.accent;
+  sb.textContent = cfg.submit;
+  typewrite(ta, cfg.placeholder);
 }
+
 document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const btn = document.getElementById('feedbackBtn');
-  const message = document.getElementById('feedbackMessage').value.trim();
+  var btn = document.getElementById('feedbackBtn');
+  var message = document.getElementById('feedbackMessage').value.trim();
   if (!message) return;
+  var orig = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'SENDING...';
   try {
-    const res = await fetch('https://nvwuizocgspcvrbyquqx.supabase.co/functions/v1/send-website-feedback', {
+    var res = await fetch('https://nvwuizocgspcvrbyquqx.supabase.co/functions/v1/send-website-feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: feedbackType, message })
     });
     if (res.ok) {
       document.getElementById('feedbackMessage').value = '';
-      document.getElementById('feedbackSuccess').style.display = 'block';
-      btn.textContent = 'SUBMIT TO THE LEDGER';
+      var ss = document.getElementById('feedbackSuccess');
+      ss.style.display = 'block';
+      btn.textContent = orig;
       btn.disabled = false;
     } else { throw new Error(); }
   } catch {
