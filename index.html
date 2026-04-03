@@ -63,9 +63,60 @@ a { color: #C8841C; text-decoration: none; }
   cursor: pointer; transition: all 0.25s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden;
   display: flex; align-items: center; gap: 8px;
 }
-.feedback-type .ft-icon { font-size: 14px; transition: transform 0.3s ease; display: inline-block; }
+.feedback-type .ft-icon { font-size: 14px; transition: transform 0.3s ease; display: inline-flex; align-items: center; }
 .feedback-type:hover:not(.active) { color: #F7F3EC50; border-color: #ffffff20; }
 .feedback-type:hover:not(.active) .ft-icon { transform: scale(1.2); }
+
+/* Bug SVG animations */
+.bug-svg { display: block; transition: transform 0.3s ease; }
+@keyframes bug-idle {
+  0%,100% { transform: rotate(-3deg) translateY(0); }
+  25%      { transform: rotate(3deg) translateY(-1px); }
+  50%      { transform: rotate(-2deg) translateY(1px); }
+  75%      { transform: rotate(2deg) translateY(-1px); }
+}
+@keyframes bug-legs {
+  0%,100% { transform: rotate(0deg); }
+  25%     { transform: rotate(20deg); }
+  75%     { transform: rotate(-20deg); }
+}
+@keyframes bug-antenna {
+  0%,100% { transform: rotate(0deg); transform-origin: bottom center; }
+  50%     { transform: rotate(15deg); transform-origin: bottom center; }
+}
+@keyframes bug-panic {
+  0%   { transform: rotate(0deg) scale(1); }
+  10%  { transform: rotate(-15deg) scale(1.15) translateX(-2px); }
+  20%  { transform: rotate(15deg) scale(1.15) translateX(2px); }
+  30%  { transform: rotate(-12deg) scale(1.2) translateX(-1px); }
+  40%  { transform: rotate(12deg) scale(1.2) translateX(1px); }
+  50%  { transform: rotate(-8deg) scale(1.15); }
+  60%  { transform: rotate(8deg) scale(1.1); }
+  70%  { transform: rotate(-5deg) scale(1.05); }
+  80%  { transform: rotate(5deg) scale(1.02); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.feedback-type[data-type="bug"] .bug-svg {
+  animation: bug-idle 2.5s ease-in-out infinite;
+}
+.feedback-type[data-type="bug"].active .bug-svg {
+  animation: bug-panic 0.8s ease-in-out infinite;
+}
+.feedback-type[data-type="bug"]:hover .bug-svg {
+  animation: bug-panic 0.6s ease-in-out;
+}
+.bug-leg { transform-origin: 12px 24px; }
+.feedback-type[data-type="bug"].active .bug-leg {
+  animation: bug-legs 0.3s ease-in-out infinite alternate;
+}
+.bug-antenna-l { transform-origin: 17px 9px; }
+.bug-antenna-r { transform-origin: 23px 9px; }
+.feedback-type[data-type="bug"].active .bug-antenna-l {
+  animation: bug-antenna 0.4s ease-in-out infinite alternate;
+}
+.feedback-type[data-type="bug"].active .bug-antenna-r {
+  animation: bug-antenna 0.4s ease-in-out infinite alternate-reverse;
+}
 
 .feedback-type[data-type="bug"].active   { border-color: #C0392B; color: #E74C3C; background: #C0392B12; }
 .feedback-type[data-type="bug"].active .ft-icon { transform: rotate(-15deg) scale(1.1); }
@@ -226,7 +277,39 @@ a { color: #C8841C; text-decoration: none; }
     <form id="feedbackForm">
       <div class="feedback-types">
         <button type="button" class="feedback-type active" data-type="bug" onclick="selectType(this)">
-          <span class="ft-icon">🐛</span> FOUND A BUG
+          <span class="ft-icon bug-icon">
+            <svg class="bug-svg" width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- body -->
+              <ellipse class="bug-body" cx="20" cy="24" rx="8" ry="10" fill="#C0392B"/>
+              <!-- head -->
+              <ellipse cx="20" cy="13" rx="5" ry="4.5" fill="#C0392B"/>
+              <!-- eyes -->
+              <circle cx="17.5" cy="12" r="1.5" fill="white"/>
+              <circle cx="22.5" cy="12" r="1.5" fill="white"/>
+              <circle cx="17.8" cy="12" r="0.7" fill="#0D0D0D"/>
+              <circle cx="22.8" cy="12" r="0.7" fill="#0D0D0D"/>
+              <!-- antennae -->
+              <line class="bug-antenna-l" x1="17" y1="9" x2="13" y2="4" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="bug-antenna-r" x1="23" y1="9" x2="27" y2="4" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="13" cy="4" r="1.2" fill="#C0392B"/>
+              <circle cx="27" cy="4" r="1.2" fill="#C0392B"/>
+              <!-- legs left -->
+              <line class="bug-leg" x1="12" y1="20" x2="5" y2="17" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="bug-leg" x1="12" y1="24" x2="4" y2="24" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="bug-leg" x1="12" y1="28" x2="5" y2="31" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- legs right -->
+              <line class="bug-leg" x1="28" y1="20" x2="35" y2="17" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="bug-leg" x1="28" y1="24" x2="36" y2="24" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="bug-leg" x1="28" y1="28" x2="35" y2="31" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- wing split line -->
+              <line x1="20" y1="15" x2="20" y2="33" stroke="#0D0D0D" stroke-width="0.8" opacity="0.3"/>
+              <!-- spots -->
+              <circle cx="16" cy="22" r="1.5" fill="#0D0D0D" opacity="0.25"/>
+              <circle cx="24" cy="22" r="1.5" fill="#0D0D0D" opacity="0.25"/>
+              <circle cx="16" cy="28" r="1.5" fill="#0D0D0D" opacity="0.25"/>
+              <circle cx="24" cy="28" r="1.5" fill="#0D0D0D" opacity="0.25"/>
+            </svg>
+          </span> FOUND A BUG
         </button>
         <button type="button" class="feedback-type" data-type="suggestion" onclick="selectType(this)">
           <span class="ft-icon">💡</span> HAVE A SUGGESTION
