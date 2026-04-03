@@ -54,6 +54,20 @@ a { color: #C8841C; text-decoration: none; }
 .btn-eth { border-color: #627EEA80; color: #627EEA; background: #627EEA15; }
 .eth-addr { font-size: 9px; letter-spacing: 1px; opacity: 0.6; font-family: monospace; margin-top: 4px; }
 
+.feedback { padding: 100px 60px; border-top: 0.5px solid #ffffff10; }
+.feedback-inner { max-width: 680px; }
+.feedback-types { display: flex; gap: 2px; margin-bottom: 24px; }
+.feedback-type { font-family: 'Arial Black', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 3px; padding: 12px 24px; border: 1px solid #ffffff15; color: #F7F3EC40; background: transparent; cursor: pointer; transition: all 0.15s; }
+.feedback-type.active { border-color: #C8841C; color: #C8841C; background: #C8841C10; }
+.feedback-type:hover:not(.active) { border-color: #ffffff30; color: #F7F3EC60; }
+.feedback-textarea { width: 100%; background: #1A1714; border: 1px solid #ffffff10; color: #F7F3EC; font-family: 'Georgia', serif; font-size: 14px; line-height: 1.7; padding: 24px; resize: vertical; min-height: 140px; outline: none; margin-bottom: 2px; }
+.feedback-textarea:focus { border-color: #C8841C40; }
+.feedback-textarea::placeholder { color: #F7F3EC25; font-style: italic; }
+.feedback-submit { font-family: 'Arial Black', sans-serif; font-size: 11px; font-weight: 900; letter-spacing: 3px; padding: 16px 32px; background: #C8841C; color: #0D0D0D; border: none; cursor: pointer; width: 100%; margin-top: 2px; }
+.feedback-submit:hover { opacity: 0.9; }
+.feedback-submit:disabled { opacity: 0.4; cursor: default; }
+.feedback-success { font-size: 12px; letter-spacing: 2px; color: #C8841C; text-transform: uppercase; margin-top: 16px; display: none; }
+
 .footer { padding: 48px 60px; border-top: 0.5px solid #ffffff10; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
 .footer-logo { display: flex; align-items: center; gap: 10px; }
 .footer-copy { font-size: 10px; letter-spacing: 2px; color: #F7F3EC30; text-transform: uppercase; }
@@ -68,6 +82,7 @@ a { color: #C8841C; text-decoration: none; }
   .scores { grid-template-columns: 1fr; }
   .section { padding: 60px 24px; }
   .support { padding: 60px 24px; flex-direction: column; }
+  .feedback { padding: 60px 24px; }
   .footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; }
 }
 </style>
@@ -169,6 +184,56 @@ a { color: #C8841C; text-decoration: none; }
     </div>
   </div>
 </div>
+
+<section class="feedback" id="feedback">
+  <div class="feedback-inner">
+    <div class="section-label">THE CRITIC'S DESK</div>
+    <h2 class="section-title" style="margin-bottom:40px">FOUND A BUG?<br>HAVE A THOUGHT?</h2>
+    <form id="feedbackForm">
+      <div class="feedback-types">
+        <button type="button" class="feedback-type active" onclick="selectType(this,'BUG REPORT')">FOUND A BUG</button>
+        <button type="button" class="feedback-type" onclick="selectType(this,'SUGGESTION')">HAVE A SUGGESTION</button>
+        <button type="button" class="feedback-type" onclick="selectType(this,'OTHER')">OTHER</button>
+      </div>
+      <textarea class="feedback-textarea" id="feedbackMessage" placeholder="Tell us what happened, or what you'd love to see..." required></textarea>
+      <button type="submit" class="feedback-submit" id="feedbackBtn">SUBMIT TO THE LEDGER</button>
+      <div class="feedback-success" id="feedbackSuccess">VERDICT RECEIVED. WE'LL LOOK INTO IT.</div>
+    </form>
+  </div>
+</section>
+
+<script>
+var feedbackType = 'BUG REPORT';
+function selectType(btn, type) {
+  document.querySelectorAll('.feedback-type').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  feedbackType = type;
+}
+document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('feedbackBtn');
+  const message = document.getElementById('feedbackMessage').value.trim();
+  if (!message) return;
+  btn.disabled = true;
+  btn.textContent = 'SENDING...';
+  try {
+    const res = await fetch('https://nvwuizocgspcvrbyquqx.supabase.co/functions/v1/send-website-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: feedbackType, message })
+    });
+    if (res.ok) {
+      document.getElementById('feedbackMessage').value = '';
+      document.getElementById('feedbackSuccess').style.display = 'block';
+      btn.textContent = 'SUBMIT TO THE LEDGER';
+      btn.disabled = false;
+    } else { throw new Error(); }
+  } catch {
+    btn.textContent = 'FAILED — TRY AGAIN';
+    btn.disabled = false;
+  }
+});
+</script>
 
 <footer class="footer">
   <div class="footer-logo">
